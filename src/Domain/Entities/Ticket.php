@@ -45,6 +45,11 @@ class Ticket
         return $this->numbers;
     }
 
+    public function matchCount(Ticket $other): int
+    {
+        return count(array_intersect($this->numbers, $other->getNumbers()));
+    }
+
     public function toString(): string
     {
         return implode(
