@@ -60,7 +60,7 @@ cd lottery
 2. Inicie os containers:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 3. Instale as dependências:
