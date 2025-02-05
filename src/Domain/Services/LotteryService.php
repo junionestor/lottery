@@ -19,7 +19,11 @@ class LotteryService
         
         $tickets = [];
         for ($i = 0; $i < $quantity; $i++) {
-            $tickets[] = $this->generateSingleTicket($numbersPerTicket);
+            do {
+                $ticket = $this->generateSingleTicket($numbersPerTicket);
+            } while (in_array($ticket, $tickets));
+
+            $tickets[] = $ticket;
         }
         
         return $tickets;
