@@ -55,7 +55,7 @@ class LotteryController
                     'numbers' => $winningTicket->getNumbers(),
                     'formatted' => $winningTicket->toString()
                 ],
-                'tickets' => array_map(fn(Ticket $ticket) => [
+                'tickets' => array_map(fn (Ticket $ticket) => [
                     'numbers' => $ticket->getNumbers(),
                     'formatted' => $ticket->toString(),
                     'matches' => $ticket->matchCount($winningTicket)

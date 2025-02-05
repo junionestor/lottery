@@ -16,7 +16,7 @@ class LotteryService
     public function generateTickets(int $quantity, int $numbersPerTicket): array
     {
         $this->validateTicketGeneration($quantity, $numbersPerTicket);
-        
+
         $tickets = [];
         for ($i = 0; $i < $quantity; $i++) {
             do {
@@ -25,7 +25,7 @@ class LotteryService
 
             $tickets[] = $ticket;
         }
-        
+
         return $tickets;
     }
 
@@ -55,7 +55,7 @@ class LotteryService
                 $numbers[] = $number;
             }
         }
-        
+
         return new Ticket($numbers);
     }
 

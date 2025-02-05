@@ -55,7 +55,7 @@ class Ticket
         return implode(
             ', ',
             array_map(
-                fn($number) =>
+                fn ($number) =>
                 str_pad((string) $number, 2, '0', STR_PAD_LEFT),
                 $this->numbers
             )
