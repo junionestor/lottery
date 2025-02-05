@@ -9,4 +9,5 @@ services:
       - .:/var/www/html
     environment:
       - APP_ENV=development
+      - PHP_CS_FIXER_IGNORE_ENV=true
     command:  ["php", "-S", "0.0.0.0:8000", "-t", "/var/www/html/routes/"]
