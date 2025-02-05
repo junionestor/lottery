@@ -1,3 +1,18 @@
+# 📑 Sumário
+- [💡 Sobre o Projeto](#-sobre-o-projeto)
+  - [Funcionalidades](#funcionalidades)
+- [🚀 Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [📋 Requisitos](#-requisitos)
+- [🛠️ Instalação](#️-instalação)
+- [📚 API](#api)
+  - [Endpoints](#endpoints)
+- [🏗️ Arquitetura](#️-arquitetura)
+- [👥 Autor](#-autor)
+- [👨‍💻 Para Desenvolvedores](#-para-desenvolvedores)
+  - [Entrar no Container](#entrar-no-container)
+  - [Executar PHP CS Fixer](#executar-php-cs-fixer)
+
+
 # Loteria - API de Sorteios
 
 API para geração e verificação de bilhetes de loteria.
@@ -51,8 +66,76 @@ docker-compose up -d
 3. Instale as dependências:
 
 ```bash
-docker-compose exec app composer install
+docker compose exec app composer install
 ```
+
+Pronto! A Api já está rodando em `localhost:8000/api.php`
+
+## 📚API
+Endpoints:
+- <span style="color: #49cc90;">POST</span><code> localhost:8000/api.php/draw</code>: gera o sorteio para uma requisição.
+```json
+// body
+{
+    "quantity": 1,
+    "numbers_per_ticket": 10
+}
+
+// quantity: quantidade de bilhetes a serem gerados
+// numbers_per_ticket: quantidade de dezenas geradas em cada bilhete
+```
+```json
+// response
+{
+    "success": true,
+    "data": {
+        "winning_ticket": {
+            "numbers": [1, 2, 3, 4, 5, 6],
+            "formatted": "01-02-03-04-05-06"
+        },
+        "tickets": [
+            {
+                "numbers": [1, 2, 3, 4, 5, 6],
+                "formatted": "01-02-03-04-05-06",
+                "matches": 6
+            }
+        ],
+        "results_table": "<table>...</table>"
+    },
+    "error": null
+// success: booleano se a requisição foi realizada com sucesso
+// data:
+//  winning_ticket: bilhete premiado
+//  tickets: bilhete(s) gerado(s)
+//  results_table: tabela com a conferência dos resultados
+}
+```
+
+- <span style="color: #49cc90;">POST</span><code> localhost:8000/api.php/draw/table</code>: gera o sorteio para uma requisição em formato HTML.
+```json
+// body
+{
+    "quantity": 1,
+    "numbers_per_ticket": 10
+}
+
+// quantity: quantidade de bilhetes a serem gerados
+// numbers_per_ticket: quantidade de dezenas geradas em cada bilhete
+```
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    ...
+</head>
+
+<body>
+    <table>...</table>
+</html>
+```
+
+![tabela com conferência do resultado do sorteio](image.png)
 
 ## 🏗️ Arquitetura
 
@@ -69,3 +152,16 @@ src/
 ## 👥 Autor
 
 Nestor Júnio
+
+### 👨‍💻 Para Desenvolvedores
+###### Entrar no Container
+Para entrar no container do aplicativo, execute:
+```bash
+docker compose exec app bash
+```
+
+###### Executar PHP CS Fixer
+Para executar o PHP CS Fixer e corrigir o código na pasta 📁src, execute:
+```bash
+./vendor/bin/php-cs-fixer fix src
+```
