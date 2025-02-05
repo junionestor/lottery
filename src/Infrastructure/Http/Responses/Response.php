@@ -88,7 +88,15 @@ class Response
         return new self(false, null, $statusCode, $message);
     }
 
-    public function send(): void
+    public function html(): void
+    {
+        http_response_code($this->statusCode);
+        header('Content-Type: text/html');
+
+        echo $this->data;
+    }
+
+    public function json(): void
     {
         http_response_code($this->statusCode);
         header('Content-Type: application/json');

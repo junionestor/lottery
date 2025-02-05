@@ -25,14 +25,13 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 try {
     switch ("$method $path") {
-        case 'GET /winning-ticket':
-            $controller->generateWinningTicket();
-            break;
-            
-        case 'POST /generate-tickets':
+        case 'POST /draw':
             $controller->generateTickets();
             break;
-            
+        case 'POST /draw/table':
+            $controller->generateTicketsTable();
+            break;
+
         default:
             http_response_code(404);
             echo json_encode([

@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Lottery\Infrastructure\Http\Controllers;
 
+use Lottery\Domain\Entities\Ticket;
 use Lottery\Domain\Exceptions\ValidationException;
 use Lottery\Domain\Services\LotteryService;
 use Lottery\Infrastructure\Http\Responses\Response;
+use Lottery\Presentation\Views\ResultsTable;
 
 class LotteryController
 {
     public function __construct(
-        private readonly LotteryService $lotteryService = new LotteryService()
+        private readonly LotteryService $lotteryService = new LotteryService(),
+        private readonly ResultsTable $resultsView = new ResultsTable()
     ) {
     }
 
@@ -23,13 +26,13 @@ class LotteryController
             Response::success([
                 'ticket' => $winningTicket->getNumbers(),
                 'formatted' => $winningTicket->toString()
-            ])->send();
+            ])->json();
         } catch (\Exception $e) {
             Response::error(
                 'Erro ao gerar bilhete premiado: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             )
-                ->send();
+                ->json();
         }
     }
 
@@ -45,15 +48,14 @@ class LotteryController
                 $requestData['numbers_per_ticket']
             );
 
-            // TODO - Implementar a geração da tabela de resultados
-            $resultsHtml = '';
+            $resultsHtml = $this->resultsView->render($tickets, $winningTicket);
 
             $response = [
                 'winning_ticket' => [
                     'numbers' => $winningTicket->getNumbers(),
                     'formatted' => $winningTicket->toString()
                 ],
-                'tickets' => array_map(fn($ticket) => [
+                'tickets' => array_map(fn(Ticket $ticket) => [
                     'numbers' => $ticket->getNumbers(),
                     'formatted' => $ticket->toString(),
                     'matches' => $ticket->matchCount($winningTicket)
@@ -61,15 +63,41 @@ class LotteryController
                 'results_table' => $resultsHtml
             ];
 
-            Response::success($response)->send();
+            Response::success($response)->json();
         } catch (ValidationException $e) {
-            Response::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->send();
+            Response::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->json();
         } catch (\Exception $e) {
             Response::error(
                 'Erro ao gerar bilhetes: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             )
-                ->send();
+                ->json();
+        }
+    }
+
+    public function generateTicketsTable()
+    {
+        try {
+            $requestData = $this->getValidatedRequestData();
+
+            $winningTicket = $this->lotteryService->generateWinningTicket();
+
+            $tickets = $this->lotteryService->generateTickets(
+                $requestData['quantity'],
+                $requestData['numbers_per_ticket']
+            );
+
+            $resultsHtml = $this->resultsView->render($tickets, $winningTicket);
+
+            Response::success($resultsHtml)->html();
+        } catch (ValidationException $e) {
+            Response::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->json();
+        } catch (\Exception $e) {
+            Response::error(
+                'Erro ao gerar bilhetes: ' . $e->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            )
+                ->json();
         }
     }
 
