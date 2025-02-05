@@ -22,7 +22,13 @@ class LotteryServiceTest extends TestCase
 
         $this->assertCount(6, $numbers);
         $this->assertEquals($numbers, array_unique($numbers));
-        $this->assertEquals($numbers, array_values(array_filter($numbers, fn($n) => $n >= 1 && $n <= 60)));
+        $this->assertEquals(
+            $numbers,
+            array_values(array_filter(
+                $numbers,
+                fn ($n) => $n >= 1 && $n <= 60
+            ))
+        );
     }
 
     public function testGenerateTickets(): void
